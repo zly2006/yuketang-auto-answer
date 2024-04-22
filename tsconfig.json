@@ -6,7 +6,8 @@
     "skipLibCheck": true
   },
   "include": [
+    "typings/*.d.ts",
     "src/**/*.ts",
-    "node_modules/**/*.d.ts"
+    "node_modules/**/*.d.ts",
   ]
 }
