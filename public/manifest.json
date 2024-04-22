@@ -1,50 +1,35 @@
 {
-    "manifest_version": 3,
-    "name": "雨课堂自动答题",
-    "version": "1.0",
-    "description": "雨课堂自动答题助手.",
-    "permissions": [
-        "activeTab",
-        "webRequest",
-        "storage"
-    ],
-    "host_permissions": [
-        "*://*.yuketang.cn/*"
-    ],
-    "background": {
-        "service_worker": "background.js",
-        "type": "module"
-    },
-    "action": {
-        "default_popup": "popup.html",
-        "default_icon": {
-            "80": "changjiang.yuketang.cn_web.png"
-        }
-    },
-    "icons": {
-        "80": "changjiang.yuketang.cn_web.png"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "*://*.yuketang.cn/*",
-                "*://yuketang.cn/*"
-            ],
-            "js": [
-                "./content.js"
-            ],
-            "run_at": "document_start",
-            "all_frames": true
-        }
-    ],
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "injected.js"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
-        }
-    ]
+  "manifest_version": 3,
+  "name": "雨课堂自动答题",
+  "version": "1.0",
+  "description": "雨课堂自动答题助手.",
+  "permissions": ["activeTab", "webRequest", "storage"],
+  "host_permissions": ["*://*.yuketang.cn/*"],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "80": "changjiang.yuketang.cn_web.png"
+    }
+  },
+  "icons": {
+    "80": "changjiang.yuketang.cn_web.png"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.yuketang.cn/*", "*://yuketang.cn/*"],
+      "js": ["./content.js"],
+      "run_at": "document_start",
+      "all_frames": true
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["injected.js"],
+      "matches": ["<all_urls>"]
+    }
+  ]
 }
