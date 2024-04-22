@@ -1,0 +1,28 @@
+{
+    "manifest_version": 2,
+    "name": "My Chrome Extension",
+    "version": "1.0",
+    "description": "雨课堂自动答题助手.",
+    "permissions": [
+        "activeTab",
+        "webRequest"
+    ],
+    "host_permissions": [
+        "*://*.yuketang.cn/*"
+    ],
+    "background": {
+        "scripts": [
+            "yuketang.ts"
+        ],
+        "persistent": true
+    },
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": {
+            "80": "changjiang.yuketang.cn_web.png"
+        }
+    },
+    "icons": {
+        "80": "changjiang.yuketang.cn_web.png"
+    }
+}
