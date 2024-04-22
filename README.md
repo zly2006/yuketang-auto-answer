@@ -5,3 +5,7 @@
 雨课堂使用 HTTP 请求获取所有ppt和答案，使用 Websocket 进行实时通讯。
 
 本拓展在 Websocket 收到 unlockproblem 通知时自动发送答案。
+
+### Credits
+
+[https://github.com/IOL0ol1/GetResponse](%E2%80%B8https://github.com/IOL0ol1/GetResponse) for getting XHR response
