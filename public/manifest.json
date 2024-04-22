@@ -3,7 +3,7 @@
   "name": "雨课堂自动答题",
   "version": "1.0",
   "description": "雨课堂自动答题助手.",
-  "permissions": ["activeTab", "webRequest", "storage"],
+  "permissions": ["activeTab", "storage"],
   "host_permissions": ["*://*.yuketang.cn/*"],
   "background": {
     "service_worker": "background.js",

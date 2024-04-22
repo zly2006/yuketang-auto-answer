@@ -14,12 +14,11 @@ type AjaxMessage = {
 
 // receive message from injected script
 window.addEventListener("message", function (e: MessageEvent<AjaxMessage>) {
-  console.log("收到消息: ", e.data);
+  // console.log("收到消息: ", e.data);
   if (!e.data.url) return;
   if (e.data.url.includes("/api/v3/lesson/presentation/fetch")) {
     if (e.data instanceof Object) {
-      console.log("收到雨课堂问题信息: ", e.data);
-      console.log("url=", e.data.url);
+      console.log("收到雨课堂课件信息: ", e.data.url, e.data);
 
       const slides = JSON.parse(e.data.data as string).data.slides;
       const problems = slides

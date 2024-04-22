@@ -47,7 +47,7 @@ WebSocket = function (url, protocols) {
   console.log("[injected.js] new websocket:", url, protocols);
   const websocket = new wsCtor(url, protocols);
   websocket.addEventListener("message", function (event) {
-    console.log("[injected.js] websocket message:", this._url, event.data);
+    // console.log("[injected.js] websocket message:", url, event.data);
     window.postMessage( // send to content script
       { type: "ws-message-received", data: event.data, url },
       "*",
