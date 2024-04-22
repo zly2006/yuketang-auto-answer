@@ -1,6 +1,15 @@
 {
-  "dependencies": {
+  "dependencies": {},
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack/webpack.config.js"
+  },
+  "devDependencies": {
     "chrome-types": "^0.1.281",
-    "typescript": "^5.4.5"
+    "copy-webpack-plugin": "^12.0.2",
+    "ts-loader": "^9.5.1",
+    "typescript": "^5.4.5",
+    "webpack": "^5.91.0",
+    "webpack-cli": "^5.1.4"
   }
 }
