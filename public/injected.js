@@ -1,3 +1,5 @@
+// https://github.com/IOL0ol1/GetResponse
+// MIT License
 (function (xhr) {
 
     var XHR = XMLHttpRequest.prototype;
@@ -14,13 +16,11 @@
     XHR.send = function (postData) {
         console.log('injected script xhr request:', this._method, this._url, this.getAllResponseHeaders(), postData);
         this.addEventListener('load', function () {
-            window.postMessage({ type: 'xhr', data: this.response }, '*');  // send to content script
+            window.postMessage({ type: 'xhr', data: this.response, url: this._url }, '*');  // send to content script
         });
         return send.apply(this, arguments);
     };
 })(XMLHttpRequest);
-
-
 
 const { fetch: origFetch } = window;
 window.fetch = async (...args) => {

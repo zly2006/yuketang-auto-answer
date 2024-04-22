@@ -8,4 +8,4 @@
 
 ### Credits
 
-[https://github.com/IOL0ol1/GetResponse](%E2%80%B8https://github.com/IOL0ol1/GetResponse) for getting XHR response
+<https://github.com/IOL0ol1/GetResponse> for getting XHR response
