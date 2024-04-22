@@ -8,15 +8,18 @@ s.onload = function () {
 
 type AjaxMessage = {
     url: string;
-    type: 'xhr' | 'fetch';
-    data: Blob;
+    type: 'xhr' | 'fetch' | 'ws-message-received';
+    data: Blob | ArrayBuffer | string | object | Document;
 }
 
 // receive message from injected script
 window.addEventListener('message', function (e: MessageEvent<AjaxMessage>) {
-    if (e.data.url.includes("yuketang.cn/api/v3/lesson/presentation/fetch")) {
-        e.data.data.text().then((text) => {
-            const slides = JSON.parse(text).title.slides;
+    if (e.data.url.includes("/api/v3/lesson/presentation/fetch")) {
+        if (e.data instanceof Object) {
+            console.log('收到雨课堂问题信息: ', e.data);
+            console.log('url=', e.data.url);
+
+            const slides = JSON.parse(e.data.data as string).data.slides;
             const problems = slides
                 .filter((slide: object) => Object.keys(slide).includes('problem'))
                 .map((slide: {
@@ -28,7 +31,13 @@ window.addEventListener('message', function (e: MessageEvent<AjaxMessage>) {
                         version: number;
                     }
                 }) => slide.problem);
+            chrome.storage.local.set({ problems });
             console.log('找到雨课堂问题信息: ', problems);
-        });
+        }
+    }
+    else if (e.type == 'ws-message-received') {
+        // todo
+        // answer POST https://changjiang.yuketang.cn/api/v3/lesson/problem/answer
+        //  {"problemId":"1140576432016954752","problemType":1,"dt":1713806598918,"result":["A"]}
     }
 });

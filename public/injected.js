@@ -1,5 +1,6 @@
 // https://github.com/IOL0ol1/GetResponse
 // MIT License
+// Mofified by zly2006, add url to response data, add websocket support
 (function (xhr) {
 
     var XHR = XMLHttpRequest.prototype;
@@ -14,8 +15,8 @@
     };
 
     XHR.send = function (postData) {
-        console.log('injected script xhr request:', this._method, this._url, this.getAllResponseHeaders(), postData);
         this.addEventListener('load', function () {
+            console.log('[injected.js] sending xhr response to content script:', this._url, 'type:', typeof this.response);
             window.postMessage({ type: 'xhr', data: this.response, url: this._url }, '*');  // send to content script
         });
         return send.apply(this, arguments);
@@ -25,7 +26,7 @@
 const { fetch: origFetch } = window;
 window.fetch = async (...args) => {
     const response = await origFetch(...args);
-    console.log('injected script fetch request:', response.url, args);
+    console.log('[injected.js] fetch request:', response.url, args);
     response
         .clone()
         .blob() // maybe json(), text(), blob()
@@ -35,4 +36,16 @@ window.fetch = async (...args) => {
         })
         .catch(err => console.error(err));
     return response;
+};
+
+// inject websocket onMessage on open() called
+const wsOpen = WebSocket.prototype.open;
+WebSocket.prototype.open = function (url, protocols) {
+    this._url = url;
+    console.log('[injected.js] websocket open:', url, protocols);
+    this.addEventListener('message', function (event) {
+        console.log('[injected.js] websocket message:', this._url, event.data);
+        window.postMessage({ type: 'ws-message-received', data: event.data, url: this._url }, '*'); // send to content script
+    });
+    return wsOpen.apply(this, arguments);
 };
