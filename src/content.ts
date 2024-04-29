@@ -14,7 +14,14 @@ type AjaxMessage = {
   data: Blob | ArrayBuffer | string | object | Document;
 };
 
-let danmakuTimes: {[name: string]: number} = {};
+type Problem = {
+  problemId: string;
+  problemType: number;
+  body: string;
+  answers: string[];
+  version: number;
+};
+let danmakuTimes: { [name: string]: number } = {};
 
 // receive message from injected script
 window.addEventListener("message", async function (e: MessageEvent<AjaxMessage>) {
@@ -61,15 +68,11 @@ window.addEventListener("message", async function (e: MessageEvent<AjaxMessage>)
     }
     if (problemId && settings.autoAnswer) {
       console.log("解锁问题: ", problemId);
-      const problems = (await chrome.storage.local.get("problems") as {
-        problems: {
-          problemId: string;
-          problemType: number;
-          body: string;
-          answers: string[];
-          version: number;
-        }[]
-      }).problems;
+      if (settings.notificationSound) {
+        const audio = new Audio(chrome.runtime.getURL("ping.mp3"));
+        audio.play();
+      }
+      const problems = (await chrome.storage.local.get("problems") as { problems: Problem[]; }).problems;
       const problem = problems.find((p) => p.problemId == problemId);
       if (problem && settings.autoAnswerTypes.includes(problem.problemType)) {
         const number = problems.indexOf(problem) + 1;
@@ -92,8 +95,6 @@ window.addEventListener("message", async function (e: MessageEvent<AjaxMessage>)
         chrome.storage.local.set({
           currentProblem: problem.body + " (答题助手已自动作答)",
         });
-        const audio = new Audio(chrome.runtime.getURL("ping.mp3"));
-        audio.play();
         this.setTimeout(() => {
           // reload
         }, 10000);

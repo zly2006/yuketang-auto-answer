@@ -26,24 +26,27 @@ document.getElementById("testSound")?.addEventListener("click", () => {
 });
 const settingForm = document.forms.namedItem("settings");
 if (settingForm) {
-  chrome.storage.local.get("settings", (data) => {
-    const settings = data.settings as Settings;
-    if (settings) {
-      settingForm.autoAnswer.checked = settings.autoAnswer;
-      settingForm.autoDanmaku.value = settings.autoDanmaku.toString();
-      settingForm.notificationSound.checked = settings.notificationSound;
-    }
-  });
   settingForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const settings = {
       autoAnswer: settingForm.autoAnswer.checked,
       autoDanmaku: parseInt(settingForm.autoDanmaku.value),
       notificationSound: settingForm.notificationSound.checked,
+      autoAnswerTypes: settingForm.autoAnswerTypes.value.split(",").map((t: string) => parseInt(t)),
     };
     chrome.storage.local.set({ settings }, () => {
       console.log("保存设置: ", settings);
       alert("保存成功, 请刷新页面生效");
     });
+  });
+
+  chrome.storage.local.get("settings", (data) => {
+    const settings = data.settings as Settings;
+    if (settings) {
+      settingForm.autoAnswer.checked = settings?.autoAnswer;
+      settingForm.autoDanmaku.value = settings?.autoDanmaku.toString();
+      settingForm.notificationSound.checked = settings?.notificationSound;
+      settingForm.autoAnswerTypes.value = settings?.autoAnswerTypes.join(",");
+    }
   });
 }
