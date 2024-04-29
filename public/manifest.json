@@ -28,7 +28,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["injected.js"],
+      "resources": ["injected.js", "ping.mp3"],
       "matches": ["<all_urls>"]
     }
   ]

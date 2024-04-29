@@ -1,3 +1,5 @@
+import { Settings } from "./background";
+
 // inject injected script
 const s = document.createElement("script");
 s.src = chrome.runtime.getURL("injected.js");
@@ -12,11 +14,15 @@ type AjaxMessage = {
   data: Blob | ArrayBuffer | string | object | Document;
 };
 
+let danmakuTimes: {[name: string]: number} = {};
+
 // receive message from injected script
-window.addEventListener("message", function (e: MessageEvent<AjaxMessage>) {
+window.addEventListener("message", async function (e: MessageEvent<AjaxMessage>) {
   // console.log("收到消息: ", e.data);
   if (!e.data.url) return;
-  if (e.data.url.includes("/api/v3/lesson/presentation/fetch")) {
+  const settings = (await chrome.storage.local.get("settings") as { settings: Settings; }).settings;
+  if (!settings) return;
+  if (e.data.url.includes("/api/v3/lesson/presentation/fetch") && settings.autoAnswer) {
     if (e.data instanceof Object) {
       console.log("收到雨课堂课件信息: ", e.data.url, e.data);
 
@@ -40,57 +46,58 @@ window.addEventListener("message", function (e: MessageEvent<AjaxMessage>) {
   } else if (e.data.type == "ws-message-received") {
     const message = JSON.parse(e.data.data as string);
     let problemId: string | null = null;
-    if (message.op && message.op == "unlockproblem") {
-      problemId = message.problem.prob; // or sid / pres (same value)
+    let lessonId: string | null = null;
+    let danmu: string | null = null;
+    if (message.op) {
+      if (message.op == "unlockproblem") {
+        problemId = message.problem.prob; // or sid / pres (same value)
+        lessonId = message.lessonid;
+      }
+      if (message.op && message.op == "probleminfo") {
+        problemId = message.problemid;
+      }
+      if (message.op == "newdanmu")
+        danmu = message.danmu;
     }
-    if (message.op && message.op == "probleminfo") {
-      problemId = message.problemid;
-    }
-    if (problemId) {
+    if (problemId && settings.autoAnswer) {
       console.log("解锁问题: ", problemId);
-      chrome.storage.local.get("problems", (data) => {
-        console.log("从本地存储中获取问题: ", data);
-        const problems = data.problems as {
+      const problems = (await chrome.storage.local.get("problems") as {
+        problems: {
           problemId: string;
           problemType: number;
           body: string;
           answers: string[];
           version: number;
-        }[];
-        const problem = problems.find((p) => p.problemId == problemId);
-        if (problem) {
-          console.log("找到问题: ", problem);
-          chrome.storage.local.set({ currentProblem: problem.body });
-          chrome.storage.local.set({ currentAnswers: problem.answers });
-          fetch("https://changjiang.yuketang.cn/api/v3/lesson/problem/answer", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              problemId: problemId,
-              problemType: problem.problemType,
-              dt: Date.now(),
-              result: problem.answers,
-            }),
-          });
-          window.postMessage({
-            type: "answer",
-            data: {
-              problemId,
-              problemType: problem.problemType,
-              dt: Date.now(),
-              result: problem.answers,
-            },
-          });
-          this.window.location.reload();
-          chrome.storage.local.set({
-            currentProblem: problem.body + " (答题助手已自动作答)",
-          });
+        }[]
+      }).problems;
+      const problem = problems.find((p) => p.problemId == problemId);
+      if (problem && settings.autoAnswerTypes.includes(problem.problemType)) {
+        const number = problems.indexOf(problem) + 1;
+        console.log("找到问题: ", problem);
+        if (!problem.answers) {
+          console.log("未找到答案，跳过");
+          return;
         }
-      });
+        chrome.storage.local.set({
+          currentProblem: problem.body,
+          currentAnswers: problem.answers
+        });
+        const postData = {
+          problemId: problemId,
+          problemType: problem.problemType,
+          dt: Date.now(),
+          result: problem.answers,
+        };
+        window.postMessage({ type: "answer", postData });
+        chrome.storage.local.set({
+          currentProblem: problem.body + " (答题助手已自动作答)",
+        });
+        const audio = new Audio(chrome.runtime.getURL("ping.mp3"));
+        audio.play();
+        this.setTimeout(() => {
+          // reload
+        }, 10000);
+      }
     }
-    // answer POST https://changjiang.yuketang.cn/api/v3/lesson/problem/answer
-    //  {"problemId":"1140576432016954752","problemType":1,"dt":1713806598918,"result":["A"]}
   }
 });

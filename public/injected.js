@@ -63,8 +63,9 @@ window.addEventListener("message", (e) => {
   if (message && message.type === "answer") {
     request.post(
       "https://changjiang.yuketang.cn/api/v3/lesson/problem/answer",
-      message.data,
+      message.postData,
     );
+    // todo: reload
   }
 });
 

@@ -1,7 +1,6 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <script src="popup.js"></script>
     <style>
       body {
         width: 300px;
@@ -23,8 +22,29 @@
     <p>注意：本拓展不能自动签到，签到必须要扫码</p>
     <p id="status"></p>
     <details>
+      <summary>设置</summary>
+      <form name="settings">
+        <input type="checkbox" name="autoAnswer" id="autoAnswer" />
+        <label for="autoAnswer">自动答题</label>
+        <br />
+        <input type="text" name="autoAnswerTypes" id="autoAnswerTypes" />
+        <label for="autoAnswerTypes">自动答题类型</label>
+        <br />
+        <input style="width: 50px;" type="number" name="autoDanmaku" id="autoDanmaku" />
+        <label for="autoDanmaku">自动跟随弹幕</label>
+        <br />
+        <input type="checkbox" name="notificationSound" id="notificationSound" />
+        <label for="notificationSound">操作时提示音</label>
+        <br />
+        <button type="submit">保存</button>
+      </form>
+    </details>
+    <details>
       <summary>调试信息</summary>
+      <button id="testSound">测试声音</button>
       <pre><code id="problems" lang="json">正在加载雨课堂数据...</code></pre>
     </details>
+
+    <script src="popup.js"></script>
   </body>
 </html>
