@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "雨课堂自动答题",
-  "version": "1.0",
+  "version": "1.1",
   "description": "雨课堂自动答题助手.",
   "permissions": ["storage"],
   "host_permissions": ["*://*.yuketang.cn/*"],
