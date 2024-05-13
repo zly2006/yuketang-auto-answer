@@ -1,6 +1,7 @@
 # 雨课堂自动答题
 
 [在 Chrome Web Store 查看](https://chrome.google.com/webstore/detail/jghbmacooekjkclhbbojecidagnobang?)
+[在 Microsoft Edge 查看](https://microsoftedge.microsoft.com/addons/detail/boeffbmphpbmikomalaopockjigillcl)
 
 这是一个 Chrome 插件，由于雨课堂把题目答案放在了前端，所以我们可以自动操作。
 
