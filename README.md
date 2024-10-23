@@ -1,3 +1,7 @@
+> [!CAUTION]
+> 
+> 雨课堂已修复此问题。 https://github.com/zly2006/yuketang-auto-answer/issues/4 此插件所有功能现已失效！
+
 # 雨课堂自动答题
 
 [在 Chrome Web Store 查看](https://chrome.google.com/webstore/detail/jghbmacooekjkclhbbojecidagnobang?)
